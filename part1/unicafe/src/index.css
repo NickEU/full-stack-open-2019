@@ -12,12 +12,7 @@ code {
     monospace;
 }
 
-.btn {
-  border-radius: 15%;
-  margin: 2px;
-}
-
-#feedbackDiv,
-.stat {
+#root {
   margin-left: 10px;
+  text-align: center;
 }

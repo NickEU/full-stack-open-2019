@@ -1,39 +1,8 @@
 import React, { useState } from "react";
 import ReactDOM from "react-dom";
 import "./index.css";
-
-const Button = ({ onClick, text }) => {
-  return (
-    <button className="btn" onClick={onClick}>
-      {text}
-    </button>
-  );
-};
-
-const StatsDisplay = ({ stats }) => {
-  return (
-    <div className="stat">
-      <h3>Statistics</h3>
-      {stats.map(item => {
-        let [key, value] = Object.entries(item)[0];
-        return <div key={key}>{`${key} ${value}`}</div>;
-      })}
-    </div>
-  );
-};
-
-const FeedbackControls = ({ handleClick }) => {
-  return (
-    <div id="feedbackDiv">
-      <h3>Give feedback</h3>
-      <div>
-        <Button text="good" onClick={handleClick("Good")} />
-        <Button text="neutral" onClick={handleClick("Neutral")} />
-        <Button text="bad" onClick={handleClick("Bad")} />
-      </div>
-    </div>
-  );
-};
+import { Buttons } from "./buttons";
+import { Statistics } from "./statistics";
 
 const App = () => {
   // save clicks of each button to own state
@@ -62,8 +31,8 @@ const App = () => {
 
   return (
     <>
-      <FeedbackControls handleClick={handleClick} />
-      <StatsDisplay stats={[{ good }, { neutral }, { bad }]} />
+      <Buttons handleClick={handleClick} />
+      <Statistics stats={[{ good }, { neutral }, { bad }]} />
     </>
   );
 };
