@@ -34,11 +34,8 @@ import ReactDOM from "react-dom";
 //      // The hello function that creates the event handlers
 //      // can be thought of as a factory that produces customized
 //      // event handlers meant for greeting users.
-//   const hello = (who) => {
-//     const handler = () => {
-//       console.log('hello', who)
-//     }
-//     return handler
+//   const hello = (who) => () => {
+//     console.log('hello', who)
 //   }
 //   return (
 //     <div>
