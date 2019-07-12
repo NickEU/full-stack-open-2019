@@ -8,7 +8,6 @@ const AddItem = props => {
     newName,
     newNumber
   } = props;
-  console.log(props);
   return (
     <div id="addItemForm">
       <h4>Add a new entry:</h4>

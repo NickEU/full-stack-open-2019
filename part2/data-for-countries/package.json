@@ -1,5 +1,5 @@
 {
-  "name": "notes",
+  "name": "data-for-countries",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
@@ -12,8 +12,7 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject",
-    "server": "json-server -p3001 db.json"
+    "eject": "react-scripts eject"
   },
   "eslintConfig": {
     "extends": "react-app"
@@ -29,8 +28,5 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
-  },
-  "devDependencies": {
-    "json-server": "^0.15.0"
   }
 }
