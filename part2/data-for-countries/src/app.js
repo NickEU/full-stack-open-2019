@@ -35,23 +35,28 @@ const App = () => {
   useEffect(hook, []);
 
   useEffect(() => {
-    if (capital === undefined) {
+    if (capital === undefined || capital.capital === "") {
       return;
     }
-    console.log(
-      `http://api.apixu.com/v1/current.json?key=cc2efc6fcf254caf9e671434191507&q=${capital}`
-    );
+    const apiKey = `85f0719e252d31fe5685f525f0617e99`;
+    const apiReqLink = `https://cors-anywhere.herokuapp.com/https://api.openweathermap.org/data/2.5/weather?q=${
+      capital.capital
+    },${capital.countryCode.toLowerCase()}&units=metric&APPID=${apiKey}`;
+    console.log(apiReqLink);
+    console.log(capital);
     axios
-      .get(
-        `http://api.apixu.com/v1/current.json?key=cc2efc6fcf254caf9e671434191507&q=${capital}`
-      )
+      .get(apiReqLink, {
+        headers: {
+          "X-Requested-With": "XMLHttpRequest" //the token is a variable which holds the token
+        }
+      })
       .then(response => {
-        console.log(response.data);
+        console.log(`response = `, response);
         setWeatherData(response.data);
       })
       .catch(function(error) {
-        // handle error
-        setWeatherData(undefined);
+        console.log(`error = `, error);
+        setWeatherData({ error: true });
       });
   }, [capital]);
 
@@ -73,16 +78,34 @@ const App = () => {
       let filteredArr = countries.filter(item =>
         item.name.toLowerCase().includes(filter)
       );
-      // console.log(filteredArr);
+      let countriesIndexZero = [
+        "ireland",
+        "congo",
+        "dominica",
+        "georgia",
+        "mali",
+        "niger",
+        "oman"
+      ];
       if (filteredArr.length > 10) {
         result = undefined;
-      } else if (filteredArr.length === 1 || filter === "ireland") {
+      } else if (
+        filteredArr.length === 1 ||
+        countriesIndexZero.indexOf(filter) !== -1
+      ) {
         result = <CountryData countryData={filteredArr[0]} />;
-        if (capital !== filteredArr[0].capital) {
+        console.log(capital);
+        if (
+          capital === undefined ||
+          (capital !== undefined && capital.capital !== filteredArr[0].capital)
+        ) {
           if (filteredArr[0].capital === "Papeetē") {
             filteredArr[0].capital = "Papeete";
           } // weather api and countries api spell this capital differently
-          setCapital(filteredArr[0].capital);
+          setCapital({
+            capital: filteredArr[0].capital,
+            countryCode: filteredArr[0].alpha2Code
+          });
         }
       } else if (filteredArr.length > 1 && filteredArr.length < 10) {
         result = (
@@ -91,10 +114,18 @@ const App = () => {
             handleBtnClick={handleBtnClick}
           />
         );
-        if (filter === "sudan") {
+        const countriesIndexOne = ["samoa", "sudan", "guinea", "india"];
+        if (countriesIndexOne.indexOf(filter) !== -1) {
           result = <CountryData countryData={filteredArr[1]} />;
-          if (capital !== filteredArr[1].capital) {
-            setCapital(filteredArr[1].capital);
+          if (
+            capital === undefined ||
+            (capital !== undefined &&
+              capital.capital !== filteredArr[1].capital)
+          ) {
+            setCapital({
+              capital: filteredArr[1].capital,
+              countryCode: filteredArr[1].alpha2Code
+            });
           }
         }
       }

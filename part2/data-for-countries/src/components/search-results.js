@@ -15,35 +15,50 @@ const SearchResults = ({ results, weather }) => {
   if (results.props === undefined) {
     return <p>These aren't the droids you're looking for</p>;
   }
+  console.log(weather);
 
-  if (
+  if (results.props.countryData === undefined) {
+    return <div id="countryInfo">{results}</div>;
+  } else if (
     weather !== undefined &&
+    !weather.error &&
     results.props.countryData !== undefined &&
-    (results.props.countryData.name
-      .toLowerCase()
-      .includes(weather.location.country.toLowerCase()) ||
-      (weather.location.country
-        .toLowerCase()
-        .includes(results.props.countryData.name.toLowerCase()) &&
-        (results.props.countryData.capital
-          .toLowerCase()
-          .includes(weather.location.name.toLowerCase()) ||
-          weather.location.name
-            .toLowerCase()
-            .includes(results.props.countryData.capital.toLowerCase()))))
+    weather.sys.country === results.props.countryData.alpha2Code
   ) {
-    console.log("---");
-    console.log(results.props.countryData.name);
-    console.log(weather.location.country);
-    console.log("---");
     return (
       <div>
         <div id="countryInfo">{results}</div>
         <WeatherData weather={weather} />
       </div>
     );
+  } else {
+    return (
+      <div>
+        <div id="countryInfo">{results}</div>
+        <div>Loading...</div>
+      </div>
+    );
+    // console.log("weather nested = ", weather);
+    // if (
+    //   weather === undefined ||
+    //   (weather !== undefined && weather.error === undefined)
+    // ) {
+    //   return (
+    //     <div>
+    //       <div id="countryInfo">{results}</div>
+    //       <div>Loading...</div>
+    //     </div>
+    //   );
+    // }
+    // if (weather !== undefined && weather.error) {
+    //   return (
+    //     <div>
+    //       <div id="countryInfo">{results}</div>
+    //       <div>Error...</div>
+    //     </div>
+    //   );
+    // }
   }
-  return <div id="countryInfo">{results}</div>;
 };
 
 export default SearchResults;
