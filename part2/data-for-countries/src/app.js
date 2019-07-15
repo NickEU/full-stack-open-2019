@@ -42,8 +42,8 @@ const App = () => {
     const apiReqLink = `https://cors-anywhere.herokuapp.com/https://api.openweathermap.org/data/2.5/weather?q=${
       capital.capital
     },${capital.countryCode.toLowerCase()}&units=metric&APPID=${apiKey}`;
-    console.log(apiReqLink);
-    console.log(capital);
+    //console.log(apiReqLink);
+    //console.log(capital);
     axios
       .get(apiReqLink, {
         headers: {
@@ -51,11 +51,11 @@ const App = () => {
         }
       })
       .then(response => {
-        console.log(`response = `, response);
+        //console.log(`response = `, response);
         setWeatherData(response.data);
       })
       .catch(function(error) {
-        console.log(`error = `, error);
+        //console.log(`error = `, error);
         setWeatherData({ error: true });
       });
   }, [capital]);
@@ -94,13 +94,15 @@ const App = () => {
         countriesIndexZero.indexOf(filter) !== -1
       ) {
         result = <CountryData countryData={filteredArr[0]} />;
-        console.log(capital);
+        //console.log(capital);
         if (
           capital === undefined ||
           (capital !== undefined && capital.capital !== filteredArr[0].capital)
         ) {
           if (filteredArr[0].capital === "Papeetē") {
             filteredArr[0].capital = "Papeete";
+          } else if (filteredArr[0].capital === "Hagåtña") {
+            filteredArr[0].capital = "Hagatna";
           } // weather api and countries api spell this capital differently
           setCapital({
             capital: filteredArr[0].capital,

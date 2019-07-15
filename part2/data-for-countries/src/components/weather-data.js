@@ -1,7 +1,7 @@
 import React from "react";
 
 const WeatherData = ({ weather }) => {
-  console.log(weather);
+  //console.log(weather);
   if (weather === undefined || weather.error !== undefined) {
     return <div>shit</div>;
   }
@@ -24,7 +24,7 @@ const WeatherData = ({ weather }) => {
     "NW",
     "NNW"
   ];
-  console.log(`wind degress = ${weather.wind.deg}`);
+  //console.log(`wind degress = ${weather.wind.deg}`);
   let i = Math.floor((weather.wind.deg + 11.25) / 22.5);
   let windDirection = weather.wind.deg ? `direction ${directions[i % 16]}` : ``;
 

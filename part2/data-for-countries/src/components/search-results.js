@@ -15,7 +15,6 @@ const SearchResults = ({ results, weather }) => {
   if (results.props === undefined) {
     return <p>These aren't the droids you're looking for</p>;
   }
-  console.log(weather);
 
   if (results.props.countryData === undefined) {
     return <div id="countryInfo">{results}</div>;
@@ -32,10 +31,10 @@ const SearchResults = ({ results, weather }) => {
       </div>
     );
   } else {
+    //console.log(`weather = `, weather);
     return (
       <div>
         <div id="countryInfo">{results}</div>
-        <div>Loading...</div>
       </div>
     );
     // console.log("weather nested = ", weather);
