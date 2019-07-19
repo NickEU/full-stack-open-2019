@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import Note from "./components/note";
-import axios from "axios";
+import noteService from "./services/notes";
 
 const App = () => {
   const [notes, setNotes] = useState([]);
@@ -9,40 +9,55 @@ const App = () => {
 
   const hook = () => {
     console.log("stepped inside effect");
-    axios.get("http://localhost:3001/notes").then(response => {
-      console.log("promise fulfilled", response);
-      setNotes(response.data);
-    });
+    noteService.getAll().then(notes => setNotes(notes));
   };
 
   useEffect(hook, []);
 
   console.log("rendered", notes.length, "notes");
 
+  const handleToggleImportance = e => {
+    const id = Number(e.target.parentNode.id);
+    const note = notes.find(item => item.id === id);
+    const changedNote = { ...note, important: !note.important };
+    noteService
+      .update(id, changedNote)
+      .then(updatedNote => {
+        setNotes(notes.map(note => (note.id !== id ? note : updatedNote)));
+      })
+      .catch(err => {
+        alert(`the note '${note.content}' was already deleted from the server`);
+        setNotes(notes.filter(note => note.id !== id));
+      });
+  };
+
   const rows = () => {
     let notesToRender = showAll ? notes : notes.filter(item => item.important);
-    return notesToRender.map(note => <Note key={note.id} note={note} />);
+    return notesToRender.map(note => (
+      <Note
+        key={note.id}
+        note={note}
+        toggleImportance={handleToggleImportance}
+      />
+    ));
   };
 
   const addNote = e => {
     e.preventDefault();
     console.log("btn clicked", e.target);
-    setNotes([
-      ...notes,
-      {
-        id: notes[notes.length - 1].id + 1,
-        content: newNote,
-        date: new Date().toISOString(),
-        important: Math.random() > 0.5
-      }
-    ]);
-
+    const noteObject = {
+      content: newNote,
+      date: new Date().toISOString(),
+      important: Math.random() > 0.5
+    };
+    noteService.create(noteObject).then(addedNote => {
+      setNotes(notes.concat(addedNote));
+    });
     setNewNote("");
   };
 
   const handleNoteChange = e => {
     setNewNote(e.target.value);
-    console.log(newNote);
   };
 
   return (

@@ -27,8 +27,9 @@ const App = () => {
 
   const hook = () => {
     axios.get("https://restcountries.eu/rest/v2/all").then(response => {
-      setCountries(response.data);
-      console.log(response.data);
+      let countries = response.data.filter(country => country.capital !== "");
+      console.log(countries);
+      setCountries(countries);
     });
   };
 

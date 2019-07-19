@@ -1,5 +1,5 @@
 {
-  "name": "notes",
+  "name": "phonebook",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
@@ -13,7 +13,7 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "server": "json-server -p3002 db.json"
+    "server": "json-server -p3001 db.json"
   },
   "eslintConfig": {
     "extends": "react-app"
