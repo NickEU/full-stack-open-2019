@@ -18,4 +18,10 @@ const deleteEntry = id => {
   return request.then(res => res);
 };
 
-export default { getAll, create, deleteEntry };
+const updateEntry = newObject => {
+  const url = `${baseUrl}/${newObject.id}`;
+  const request = axios.put(url, newObject);
+  return request.then(res => res.data);
+};
+
+export default { getAll, create, deleteEntry, updateEntry };

@@ -1,11 +1,14 @@
 import React, { useState, useEffect } from "react";
 import Note from "./components/note";
+import Notification from "./components/notification";
 import noteService from "./services/notes";
+import Footer from "./components/footer";
 
 const App = () => {
   const [notes, setNotes] = useState([]);
   const [newNote, setNewNote] = useState("This is a new note");
   const [showAll, setShowAll] = useState(true);
+  const [errorMessage, setErrorMessage] = useState(null);
 
   const hook = () => {
     console.log("stepped inside effect");
@@ -26,7 +29,12 @@ const App = () => {
         setNotes(notes.map(note => (note.id !== id ? note : updatedNote)));
       })
       .catch(err => {
-        alert(`the note '${note.content}' was already deleted from the server`);
+        setErrorMessage(
+          `Note '${note.content}' was already removed from server`
+        );
+        setTimeout(() => {
+          setErrorMessage(null);
+        }, 5000);
         setNotes(notes.filter(note => note.id !== id));
       });
   };
@@ -63,6 +71,7 @@ const App = () => {
   return (
     <div>
       <h1>Notes</h1>
+      <Notification message={errorMessage} />
       <ul>{rows()}</ul>
       <button onClick={() => setShowAll(!showAll)}>
         show {showAll ? "important" : "all"}
@@ -71,6 +80,7 @@ const App = () => {
         <input value={newNote} onChange={handleNoteChange} />
         <button type="submit">save</button>
       </form>
+      <Footer />
     </div>
   );
 };

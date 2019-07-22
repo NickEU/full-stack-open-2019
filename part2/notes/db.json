@@ -51,13 +51,13 @@
     {
       "content": "This is a new note 5",
       "date": "2019-07-19T09:20:07.368Z",
-      "important": true,
+      "important": false,
       "id": 10
     },
     {
       "content": "This is a new note 6",
       "date": "2019-07-19T09:20:57.585Z",
-      "important": true,
+      "important": false,
       "id": 11
     },
     {
@@ -69,7 +69,7 @@
     {
       "content": "This is a new note 8",
       "date": "2019-07-19T10:25:48.925Z",
-      "important": true,
+      "important": false,
       "id": 13
     },
     {

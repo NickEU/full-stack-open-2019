@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import List from "./components/list";
 import Filter from "./components/filter";
 import AddItem from "./components/add-item";
+import Notification from "./components/notification";
 import dbServices from "./services/people";
 
 const App = () => {
@@ -9,6 +10,7 @@ const App = () => {
   const [newName, setNewName] = useState("");
   const [newNumber, setNewNumber] = useState("");
   const [filterValue, setFilterValue] = useState("");
+  const [errorMsg, setErrorMsg] = useState({ text: null });
 
   const hook = () => {
     dbServices.getAll().then(data => setPeople(data));
@@ -16,29 +18,78 @@ const App = () => {
 
   useEffect(hook, []);
 
+  const updateIfNeeded = trimmedNewName => {
+    for (let i = 0; i < people.length; i++) {
+      const item = people[i];
+      if (item.name === trimmedNewName) {
+        const confirm = window.confirm(
+          `${trimmedNewName} already exists in the phonebook. Would you like to replace the old number with the new one?`
+        );
+        if (confirm) {
+          dbServices
+            .updateEntry({ ...item, number: cleanUpNewNumber() })
+            .then(res => {
+              setPeople(
+                people.map(entry => (entry.id === item.id ? res : entry))
+              );
+              showNotificationMsg(`Updated info on ${item.name}`, false);
+            })
+            .catch(err => {
+              console.log(err);
+              showNotificationMsg(
+                `Info on ${item.name} has already been removed from the server`,
+                true
+              );
+              hook();
+            });
+        }
+        return true;
+      }
+    }
+    return false;
+  };
+
+  const cleanUpNewNumber = () => {
+    return newNumber.replace(/-+|\s+/g, "-").replace(/^-*(.+?)-*$/g, "$1");
+    // played around with regex a bit to delete and/or trim duplicate hyphens
+    // and replaced whitespace with hyphens
+  };
+
+  const showNotificationMsg = (msg, isError) => {
+    setErrorMsg({ text: msg, isError });
+    setTimeout(() => setErrorMsg({ text: null }), 5000);
+  };
+
   const handleFormSubmit = e => {
+    console.log("entered form submit");
     e.preventDefault();
     if (newName === "" || !/^[a-z ]*$/i.test(newName)) {
       alert(`Please enter a valid name`);
       return;
     }
+
+    const trimmedNewName = newName.trim();
+
     if (newNumber === "" || /[^\d -]/.test(newNumber)) {
       //any string that includes anything
       //that is not a digit, a whitespace or a hypen is not a valid number
       alert(`Please enter a valid phone number`);
       return;
     }
-    if (people.some(item => item.name === newName)) {
-      alert(`${newName} already exists in the phonebook`);
+
+    if (updateIfNeeded(trimmedNewName)) {
       return;
     }
+
     const newObj = {
-      name: newName,
-      number: newNumber.replace(/-+|\s+/g, "-").replace(/^-*(.+?)-*$/g, "$1")
-      // played around with regex a bit to delete and/or trim duplicate hyphens
-      // and replaced whitespace with hyphens
+      name: trimmedNewName,
+      number: cleanUpNewNumber()
     };
-    dbServices.create(newObj).then(person => setPeople([...people, person]));
+    dbServices.create(newObj).then(person => {
+      setPeople([...people, person]);
+      showNotificationMsg(`Successfully added ${newObj.name}`, false);
+    });
+
     setNewName("");
     setNewNumber("");
   };
@@ -46,9 +97,10 @@ const App = () => {
   const handleDeleteBtnClick = id => {
     const targetPerson = people.find(person => person.id === id);
     if (window.confirm(`Wanna delete ${targetPerson.name}?`)) {
-      dbServices
-        .deleteEntry(id)
-        .then(() => setPeople(people.filter(person => person.id !== id)));
+      dbServices.deleteEntry(id).then(() => {
+        setPeople(people.filter(person => person.id !== id));
+        showNotificationMsg(`Successfully deleted ${targetPerson.name}`, false);
+      });
     }
   };
 
@@ -76,6 +128,7 @@ const App = () => {
   return (
     <div id="container">
       <h2>Phonebook</h2>
+      <Notification error={errorMsg} />
       <AddItem
         formSubmit={handleFormSubmit}
         onNameInputChange={handleNameInputChange}
