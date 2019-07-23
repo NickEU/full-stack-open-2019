@@ -5,6 +5,8 @@ import AddItem from "./components/add-item";
 import Notification from "./components/notification";
 import dbServices from "./services/people";
 
+let timerIDs = [];
+
 const App = () => {
   const [people, setPeople] = useState([]);
   const [newName, setNewName] = useState("");
@@ -12,11 +14,11 @@ const App = () => {
   const [filterValue, setFilterValue] = useState("");
   const [errorMsg, setErrorMsg] = useState({ text: null });
 
-  const hook = () => {
+  const getPeople = () => {
     dbServices.getAll().then(data => setPeople(data));
   };
 
-  useEffect(hook, []);
+  useEffect(getPeople, []);
 
   const updateIfNeeded = trimmedNewName => {
     for (let i = 0; i < people.length; i++) {
@@ -40,7 +42,7 @@ const App = () => {
                 `Info on ${item.name} has already been removed from the server`,
                 true
               );
-              hook();
+              getPeople();
             });
         }
         return true;
@@ -56,8 +58,17 @@ const App = () => {
   };
 
   const showNotificationMsg = (msg, isError) => {
+    if (timerIDs.length > 0) {
+      timerIDs.forEach(id => clearTimeout(id));
+      timerIDs = [];
+    }
     setErrorMsg({ text: msg, isError });
-    setTimeout(() => setErrorMsg({ text: null }), 5000);
+    timerIDs.push(
+      setTimeout(() => {
+        setErrorMsg({ text: null });
+        timerIDs.shift();
+      }, 5000)
+    );
   };
 
   const handleFormSubmit = e => {
