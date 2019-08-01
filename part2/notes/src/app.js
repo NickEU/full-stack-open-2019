@@ -20,7 +20,7 @@ const App = () => {
   console.log("rendered", notes.length, "notes");
 
   const handleToggleImportance = e => {
-    const id = Number(e.target.parentNode.id);
+    const id = e.target.parentNode.id;
     const note = notes.find(item => item.id === id);
     const changedNote = { ...note, important: !note.important };
     noteService
