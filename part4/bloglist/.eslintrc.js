@@ -3,19 +3,20 @@ module.exports = {
     browser: true,
     commonjs: true,
     es6: true,
-    node: true
+    node: true,
+    jest: true,
   },
-  extends: ["airbnb-base"],
+  extends: ['airbnb-base'],
   globals: {
-    Atomics: "readonly",
-    SharedArrayBuffer: "readonly"
+    Atomics: 'readonly',
+    SharedArrayBuffer: 'readonly',
   },
   parserOptions: {
-    ecmaVersion: 2018
+    ecmaVersion: 2018,
   },
   rules: {
-    "no-underscore-dangle": "off",
-    "no-param-reassign": ["error", { props: false }],
-    "no-console": "off"
-  }
+    'no-underscore-dangle': 'off',
+    'no-param-reassign': ['error', { props: false }],
+    'no-console': 'off',
+  },
 };
