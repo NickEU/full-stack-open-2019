@@ -1,8 +1,18 @@
 {
+  "env": {
+    "browser": true,
+    "commonjs": true,
+    "es6": true,
+    "node": true,
+    "jest": true
+  },
   "extends": ["airbnb", "prettier"],
   "plugins": ["prettier"],
   "rules": {
     "prettier/prettier": ["error"],
-    "no-console": "off"
+    "no-console": "off",
+    "consistent-return": "off",
+    "no-underscore-dangle": "off",
+    "no-param-reassign": "off"
   }
 }

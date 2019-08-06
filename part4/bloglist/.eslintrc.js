@@ -16,7 +16,7 @@ module.exports = {
   },
   rules: {
     'no-underscore-dangle': 'off',
-    'no-param-reassign': ['error', { props: false }],
+    'no-param-reassign': 'off',
     'no-console': 'off',
   },
 };

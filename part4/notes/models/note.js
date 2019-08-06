@@ -6,10 +6,10 @@ const noteSchema = new mongoose.Schema({
   content: {
     type: String,
     minlength: CONTENT_MIN_LENGTH,
-    required: true,
+    required: true
   },
-  date: { type: Date, required: true },
-  important: Boolean,
+  date: Date,
+  important: Boolean
 });
 
 noteSchema.set('toJSON', {
@@ -17,10 +17,10 @@ noteSchema.set('toJSON', {
     returnedObject.id = returnedObject._id.toString();
     delete returnedObject._id;
     delete returnedObject.__v;
-  },
+  }
 });
 
 module.exports = {
   Note: mongoose.model('Note', noteSchema),
-  CONTENT_MIN_LENGTH,
+  CONTENT_MIN_LENGTH
 };
