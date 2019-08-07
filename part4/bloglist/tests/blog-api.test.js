@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 const supertest = require('supertest');
-// const helper = require('./api-helper');
+const helper = require('./api-helper');
 const { blogs: initialBlogs } = require('../utils/mock-blogs');
 const app = require('../app');
 const { Blog } = require('../models/blog');
@@ -35,6 +35,38 @@ describe('apitest', () => {
       const response = await api.get('/api/blogs');
 
       expect(response.body.length).toBe(initialBlogs.length);
+    },
+    JEST_TIMEOUT,
+  );
+
+  test(
+    "unique identifier 'id' exists",
+    async () => {
+      const response = await api.get('/api/blogs');
+      response.body.forEach((entry) => {
+        expect(entry.id).toBeDefined();
+      });
+    },
+    JEST_TIMEOUT,
+  );
+
+  test(
+    'post req w a new blog saves to db correctly and increases the nmbr of blgs in the system by 1',
+    async () => {
+      const newBlog = {
+        title: 'Integrating Prettier + ESLint + Airbnb Style Guide in VSCode',
+        author: 'Jeffrey Zhen',
+        url:
+          'https://blog.echobind.com/integrating-prettier-eslint-airbnb-style-guide-in-vscode-47f07b5d7d6a',
+        likes: 6,
+      };
+      await api
+        .post('/api/blogs')
+        .send(newBlog)
+        .expect(201)
+        .expect('Content-Type', /application\/json/);
+      const blogsAfterPost = await helper.blogsInDb();
+      expect(blogsAfterPost.length).toBe(initialBlogs.length + 1);
     },
     JEST_TIMEOUT,
   );
