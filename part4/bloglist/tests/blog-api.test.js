@@ -71,6 +71,41 @@ describe('apitest', () => {
     JEST_TIMEOUT,
   );
 
+  test(
+    'if likes prop is missing from the request it defaults to 0',
+    async () => {
+      const newBlog = {
+        title: 'Integrating Prettier + ESLint + Airbnb Style Guide in VSCode',
+        author: 'Jeffrey Zhen',
+        url:
+          'https://blog.echobind.com/integrating-prettier-eslint-airbnb-style-guide-in-vscode-47f07b5d7d6a',
+      };
+      const savedNote = await api
+        .post('/api/blogs')
+        .send(newBlog)
+        .expect(201)
+        .expect('Content-Type', /application\/json/);
+      expect(savedNote.body.likes).toBe(0);
+    },
+    JEST_TIMEOUT,
+  );
+
+  test(
+    'if title and url props are missing from post req api responds with 400 status code',
+    async () => {
+      const newBlog = {
+        author: 'Jeffrey Zhen',
+        likes: 6,
+      };
+
+      await api
+        .post('/api/blogs')
+        .send(newBlog)
+        .expect(400);
+    },
+    JEST_TIMEOUT,
+  );
+
   afterAll(() => {
     mongoose.connection.close();
   });
