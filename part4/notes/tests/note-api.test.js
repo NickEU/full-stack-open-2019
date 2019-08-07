@@ -7,13 +7,29 @@ const { Note } = require('../models/note');
 const api = supertest(app);
 
 beforeEach(async () => {
+  // The noteObjects variable is assigned to an array of Mongoose objects
+  // that are created with the Note constructor for each of the notes in the helper.initialNotes array.
+  // The next line of code creates a new array that consists of promises, that are created by calling
+  // the save method of each item in the noteObjects array.
+  // In other words, it is an array of promises for saving each of the items to the database.
+
+  // The Promise.all method can be used for transforming an array of promises into a single promise,
+  // that will be fulfilled once every promise in the array passed to it as a parameter is resolved.
+  // The last line of code await Promise.all(promiseArray) waits that every promise for saving a note
+  // is finished, meaning that the database has been initialized.
+
   await Note.deleteMany({});
 
-  let noteObject = new Note(helper.initialNotes[0]);
-  await noteObject.save();
-
-  noteObject = new Note(helper.initialNotes[1]);
-  await noteObject.save();
+  // const noteObjects = helper.initialNotes.map(note => new Note(note));
+  // const promiseArray = noteObjects.map(note => note.save());
+  // await Promise.all(promiseArray);
+  // Promise.all() executes promises in parallel If the promises need to be executed in a particular order,
+  // this will be problematic. In situations like this, the operations can be executed inside of a for...of block,
+  // that guarantees a specific execution order, for ex:
+  for (const note of helper.initialNotes) {
+    const noteObject = new Note(note);
+    await noteObject.save();
+  }
 });
 
 test('notes are returned as json', async () => {

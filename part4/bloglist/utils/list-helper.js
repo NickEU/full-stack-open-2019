@@ -20,8 +20,6 @@ const mostBlogs = (blogs) => {
   return Object.values(result).sort((a, b) => b.blogs - a.blogs)[0];
 };
 
-// const { blogs } = require('../utils/mock-blogs');
-
 const mostLikes = (blogs) => {
   if (blogs.length === 0) {
     return 0;
@@ -36,9 +34,6 @@ const mostLikes = (blogs) => {
   const sortedLikes = Object.entries(result).sort((a, b) => b[1] - a[1]);
   return { author: sortedLikes[0][0], likes: sortedLikes[0][1] };
 };
-
-// console.log(mostLikes(blogs));
-// mostLikes(blogs);
 
 module.exports = {
   dummy,

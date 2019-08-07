@@ -2,8 +2,8 @@ post http://localhost:3003/api/blogs
 Content-Type: application/json
 
 {
-    "title": "The 10 Component Commandments",
-    "author": "selbekk",
-    "url": "https://dev.to/selbekk/the-10-component-commandments-2a7f",
+    "title": "Integrating Prettier + ESLint + Airbnb Style Guide in VSCode",
+    "author": "Jeffrey Zhen",
+    "url": "https://blog.echobind.com/integrating-prettier-eslint-airbnb-style-guide-in-vscode-47f07b5d7d6a",
     "likes": 58
 }
