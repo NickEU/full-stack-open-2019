@@ -8,7 +8,7 @@ const noteSchema = new mongoose.Schema({
     minlength: CONTENT_MIN_LENGTH,
     required: true
   },
-  date: Date,
+  date: { type: Date, required: true },
   important: Boolean
 });
 

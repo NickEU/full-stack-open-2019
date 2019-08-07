@@ -12,7 +12,7 @@ const logger = require('./utils/logger');
 logger.info('connecting to', config.MONGODB_URL);
 
 mongoose
-  .connect(config.MONGODB_URL, { useNewUrlParser: true })
+  .connect(config.MONGODB_URL, { useNewUrlParser: true, useFindAndModify: false })
   .then(() => {
     logger.info('connected to MongoDB');
   })

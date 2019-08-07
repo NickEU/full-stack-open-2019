@@ -80,6 +80,14 @@ test('a specific note can be viewed', async () => {
     .get(`/api/notes/${noteToView.id}`)
     .expect(200)
     .expect('Content-Type', /application\/json/);
+
+  // have to do this conversion to avoid type mismatch..
+  // without this resultNote.date is of type 'object'
+  // while noteToView.date is of type string
+  noteToView.date = JSON.stringify(noteToView.date);
+  resultNote.body.date = JSON.stringify(resultNote.body.date);
+  // console.log('rec type = ', typeof resultNote.body.date);
+  // console.log('exp type = ', typeof noteToView.date);
   expect(resultNote.body).toEqual(noteToView);
 });
 
