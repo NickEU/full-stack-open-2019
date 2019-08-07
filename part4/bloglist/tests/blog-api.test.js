@@ -11,6 +11,7 @@ const api = supertest(app);
 // ^^ use this to run npm test script
 describe('apitest', () => {
   const JEST_TIMEOUT = 10000; // ms
+
   beforeEach(async () => {
     await Blog.deleteMany();
     const blogObjects = initialBlogs.map(blog => new Blog(blog));
@@ -102,6 +103,15 @@ describe('apitest', () => {
         .post('/api/blogs')
         .send(newBlog)
         .expect(400);
+    },
+    JEST_TIMEOUT,
+  );
+
+  test(
+    'can delete a blog',
+    async () => {
+      const blogs = await helper.blogsInDb();
+      await api.delete(`/api/blogs/${blogs[0].id}`).expect(204);
     },
     JEST_TIMEOUT,
   );

@@ -32,93 +32,115 @@ beforeEach(async () => {
   }
 });
 
-test('notes are returned as json', async () => {
-  await api
-    .get('/api/notes')
-    .expect(200)
-    .expect('Content-Type', /application\/json/);
-});
+describe('when there is initially some notes saved', () => {
+  test('notes are returned as json', async () => {
+    await api
+      .get('/api/notes')
+      .expect(200)
+      .expect('Content-Type', /application\/json/);
+  });
 
-test('all notes are returned', async () => {
-  const response = await api.get('/api/notes');
+  test('all notes are returned', async () => {
+    const response = await api.get('/api/notes');
 
-  expect(response.body.length).toBe(helper.initialNotes.length);
-});
+    expect(response.body.length).toBe(helper.initialNotes.length);
+  });
 
-test('a specific note is within the returned notes', async () => {
-  const response = await api.get('/api/notes');
+  test('a specific note is within the returned notes', async () => {
+    const response = await api.get('/api/notes');
 
-  const contents = response.body.map(res => res.content);
+    const contents = response.body.map(res => res.content);
 
-  expect(contents).toContain('Browser can execute only Javascript');
-});
+    expect(contents).toContain('Browser can execute only Javascript');
+  });
 
-test('a valid note can be added', async () => {
-  const newNote = {
-    content: 'async/await simplifies making async calls',
-    important: true
-  };
+  describe('viewing a specific note', () => {
+    test('a specific note can be viewed', async () => {
+      const notesAtStart = await helper.notesInDb();
 
-  await api
-    .post('/api/notes')
-    .send(newNote)
-    .expect(200)
-    .expect('Content-Type', /application\/json/);
+      const noteToView = notesAtStart[0];
 
-  const notesAtEnd = await helper.notesInDb();
-  expect(notesAtEnd.length).toBe(helper.initialNotes.length + 1);
+      const resultNote = await api
+        .get(`/api/notes/${noteToView.id}`)
+        .expect(200)
+        .expect('Content-Type', /application\/json/);
 
-  const contents = notesAtEnd.map(res => res.content);
+      // have to do this conversion to avoid type mismatch..
+      // without this resultNote.date is of type 'object'
+      // while noteToView.date is of type string
+      noteToView.date = JSON.stringify(noteToView.date);
+      resultNote.body.date = JSON.stringify(resultNote.body.date);
+      // console.log('rec type = ', typeof resultNote.body.date);
+      // console.log('exp type = ', typeof noteToView.date);
+      expect(resultNote.body).toEqual(noteToView);
+    });
 
-  expect(contents).toContain('async/await simplifies making async calls');
-});
+    test('fails with statuscode 404 if note does not exist', async () => {
+      const validNonexistingId = await helper.nonExistingId();
 
-test('note without content is not added', async () => {
-  const newNote = {
-    important: true
-  };
+      console.log(validNonexistingId);
 
-  await api
-    .post('/api/notes')
-    .send(newNote)
-    .expect(400);
+      await api.get(`/api/notes/${validNonexistingId}`).expect(404);
+    });
 
-  const notesAtEnd = await helper.notesInDb();
-  expect(notesAtEnd.length).toBe(helper.initialNotes.length);
-});
+    test('fails with statuscode 400 id is invalid invalid', async () => {
+      const invalidId = '5a3d5da59070081a82a3445';
 
-test('a specific note can be viewed', async () => {
-  const notesAtStart = await helper.notesInDb();
+      await api.get(`/api/notes/${invalidId}`).expect(400);
+    });
+  });
 
-  const noteToView = notesAtStart[0];
+  describe('addition of a new note', () => {
+    test('success with valid data', async () => {
+      const newNote = {
+        content: 'async/await simplifies making async calls',
+        important: true
+      };
 
-  const resultNote = await api
-    .get(`/api/notes/${noteToView.id}`)
-    .expect(200)
-    .expect('Content-Type', /application\/json/);
+      await api
+        .post('/api/notes')
+        .send(newNote)
+        .expect(200)
+        .expect('Content-Type', /application\/json/);
 
-  // have to do this conversion to avoid type mismatch..
-  // without this resultNote.date is of type 'object'
-  // while noteToView.date is of type string
-  noteToView.date = JSON.stringify(noteToView.date);
-  resultNote.body.date = JSON.stringify(resultNote.body.date);
-  // console.log('rec type = ', typeof resultNote.body.date);
-  // console.log('exp type = ', typeof noteToView.date);
-  expect(resultNote.body).toEqual(noteToView);
-});
+      const notesAtEnd = await helper.notesInDb();
+      expect(notesAtEnd.length).toBe(helper.initialNotes.length + 1);
 
-test('a note can be deleted', async () => {
-  const notesAtStart = await helper.notesInDb();
-  const noteToDelete = notesAtStart[0];
+      const contents = notesAtEnd.map(res => res.content);
 
-  await api.delete(`/api/notes/${noteToDelete.id}`).expect(204);
-  const notesAtEnd = await helper.notesInDb();
+      expect(contents).toContain('async/await simplifies making async calls');
+    });
 
-  expect(notesAtEnd.length).toBe(helper.initialNotes.length - 1);
+    test('fail with code 400 with invalid data', async () => {
+      const newNote = {
+        important: true
+      };
 
-  const contents = notesAtEnd.map(r => r.content);
+      await api
+        .post('/api/notes')
+        .send(newNote)
+        .expect(400);
 
-  expect(contents).not.toContain(noteToDelete.content);
+      const notesAtEnd = await helper.notesInDb();
+      expect(notesAtEnd.length).toBe(helper.initialNotes.length);
+    });
+  });
+
+  describe('deletion of a note', () => {
+    test('success w 204 if ID is valid', async () => {
+      const notesAtStart = await helper.notesInDb();
+      const noteToDelete = notesAtStart[0];
+
+      await api.delete(`/api/notes/${noteToDelete.id}`).expect(204);
+      const notesAtEnd = await helper.notesInDb();
+
+      expect(notesAtEnd.length).toBe(helper.initialNotes.length - 1);
+
+      const contents = notesAtEnd.map(r => r.content);
+
+      expect(contents).not.toContain(noteToDelete.content);
+    });
+  });
 });
 
 afterAll(() => {
