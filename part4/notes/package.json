@@ -7,6 +7,7 @@
     "start": "cross-env NODE_ENV=production node index.js",
     "watch": "cross-env NODE_ENV=development nodemon index.js",
     "test": "cross-env NODE_ENV=test jest --verbose --runInBand",
+    "test:user": "cross-env NODE_ENV=test jest --verbose --runInBand -t 'when there is initially one user at db'",
     "build:ui": "rm -rf build && cd ../../part2/notes && npm run build --prod && cp -r build ../../part4/notes/",
     "deploy": "git push heroku master",
     "deploy:full": "npm run build:ui && git add . && git commit -m uibuild && npm run deploy",
@@ -15,11 +16,13 @@
   "author": "NickEU",
   "license": "MIT",
   "dependencies": {
+    "bcrypt": "^3.0.6",
     "body-parser": "^1.19.0",
     "cors": "^2.8.5",
     "dotenv": "^8.0.0",
     "express": "^4.17.1",
-    "mongoose": "^5.6.7"
+    "mongoose": "^5.6.7",
+    "mongoose-unique-validator": "^2.0.3"
   },
   "devDependencies": {
     "cross-env": "^5.2.0",
