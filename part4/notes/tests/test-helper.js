@@ -5,17 +5,23 @@ const initialNotes = [
   {
     content: 'HTML is easy',
     date: new Date(),
-    important: false
+    important: false,
+    userId: '5d4c374d9728d24c18b7dda8'
   },
   {
     content: 'Browser can execute only Javascript',
     date: new Date(),
-    important: true
+    important: true,
+    userId: '5d4c374d9728d24c18b7dda8'
   }
 ];
 
 const nonExistingId = async () => {
-  const note = new Note({ content: 'will remove this soon', date: new Date() });
+  const note = new Note({
+    content: 'will remove this soon',
+    date: new Date(),
+    userId: '5d4c374d9728d24c18b7dda8'
+  });
   await note.save();
   await note.remove();
   return note._id.toString();

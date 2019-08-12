@@ -1,8 +1,25 @@
 const mongoose = require('mongoose');
 const uniqueValidator = require('mongoose-unique-validator');
 
+const USERNAME_MIN_LENGTH = 6;
+
+const userNameValidatorFnc = userName => userName.search(/[^a-z0-9]/i) === -1;
+
+const userNameValidator = [
+  userNameValidatorFnc,
+  `Error! Username can only contain letters and digits.`
+];
+
 const userSchema = mongoose.Schema({
-  username: { type: String, unique: true },
+  username: {
+    type: String,
+    unique: true,
+    validate: userNameValidator,
+    minlength: [
+      USERNAME_MIN_LENGTH,
+      `Error! Username must be at least ${USERNAME_MIN_LENGTH} symbols long`
+    ]
+  },
   name: String,
   passwordHash: String,
   notes: [

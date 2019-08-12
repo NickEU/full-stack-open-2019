@@ -6,10 +6,10 @@ const app = require('../app');
 
 const api = supertest(app);
 
-describe('when there is initially one user at db', () => {
+describe('APITEST when there is initially one user at db', () => {
   beforeEach(async () => {
     await User.deleteMany({});
-    const user = new User({ username: 'root', password: 'secret' });
+    const user = new User({ username: 'root69', password: 'secret25' });
     await user.save();
   });
 
@@ -19,7 +19,7 @@ describe('when there is initially one user at db', () => {
     const newUser = {
       username: 'NickEU',
       name: 'Kirsan Lever',
-      password: 'engage'
+      password: 'engage25'
     };
 
     await api
@@ -39,9 +39,9 @@ describe('when there is initially one user at db', () => {
     const usersAtStart = await helper.usersInDb();
 
     const newUser = {
-      username: 'root',
+      username: 'root69',
       name: 'Ivan Dolvich',
-      password: 'qwerty'
+      password: 'qwerty25'
     };
 
     const result = await api

@@ -32,7 +32,7 @@ beforeEach(async () => {
   }
 });
 
-describe('when there is initially some notes saved', () => {
+describe('APITEST when there are initially some notes saved', () => {
   test('notes are returned as json', async () => {
     await api
       .get('/api/notes')
@@ -78,12 +78,10 @@ describe('when there is initially some notes saved', () => {
     test('fails with statuscode 404 if note does not exist', async () => {
       const validNonexistingId = await helper.nonExistingId();
 
-      console.log(validNonexistingId);
-
       await api.get(`/api/notes/${validNonexistingId}`).expect(404);
     });
 
-    test('fails with statuscode 400 id is invalid invalid', async () => {
+    test('fails with statuscode 400 if id is invalid', async () => {
       const invalidId = '5a3d5da59070081a82a3445';
 
       await api.get(`/api/notes/${invalidId}`).expect(400);
@@ -94,7 +92,8 @@ describe('when there is initially some notes saved', () => {
     test('success with valid data', async () => {
       const newNote = {
         content: 'async/await simplifies making async calls',
-        important: true
+        important: true,
+        userId: '5d518628f93ca43a5c3a8436'
       };
 
       await api

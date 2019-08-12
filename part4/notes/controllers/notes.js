@@ -2,9 +2,10 @@ const notesRouter = require('express').Router();
 const noteImports = require('../models/note');
 
 const { Note } = noteImports;
+const User = require('../models/user');
 
 notesRouter.get('/', async (req, res) => {
-  const notes = await Note.find({});
+  const notes = await Note.find({}).populate('user', { name: 1, username: 1 });
   res.json(notes.map(note => note.toJSON()));
 });
 
@@ -23,14 +24,26 @@ notesRouter.get('/:id', async (req, res, next) => {
 
 notesRouter.post('/', async (req, res, next) => {
   const { body } = req;
+
+  const user = await User.findById(body.userId);
+
   const note = new Note({
     content: body.content,
     important: body.important || false,
-    date: new Date()
+    date: new Date(),
+    user: user ? user._id : undefined
   });
 
   try {
     const savedNote = await note.save();
+    if (user) {
+      user.notes = user.notes.concat(savedNote._id);
+      await user.save();
+    } else {
+      // happens if the requests are not updated
+      // to use with the new version of the API
+      console.log(`user is falsy`);
+    }
     res.json(savedNote.toJSON());
   } catch (exception) {
     next(exception);

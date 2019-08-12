@@ -2,6 +2,7 @@ post http://localhost:3003/api/notes
 Content-Type: application/json
 
 {
-    "content": "Put requests are weird",
-    "important": true
+    "content": "HTTP is fun",
+    "important": true,
+    "userId": "5d4c374d9728d24c18b7dda8"
 }
