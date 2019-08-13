@@ -89,6 +89,8 @@ describe('APITEST when there are initially some notes saved', () => {
   });
 
   describe('addition of a new note', () => {
+    const token =
+      'bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InNob3RndW4iLCJpZCI6IjVkNTJkNzg0ODkyYzI2Mzg4ODZmODRmMiIsImlhdCI6MTU2NTcxMTI2MH0.DNx7iAMiYqZfdi0TXEKKNoUc0X0JO2VNbJKXYw7J47E';
     test('success with valid data', async () => {
       const newNote = {
         content: 'async/await simplifies making async calls',
@@ -98,6 +100,7 @@ describe('APITEST when there are initially some notes saved', () => {
 
       await api
         .post('/api/notes')
+        .set('Authorization', token)
         .send(newNote)
         .expect(200)
         .expect('Content-Type', /application\/json/);
@@ -117,8 +120,23 @@ describe('APITEST when there are initially some notes saved', () => {
 
       await api
         .post('/api/notes')
+        .set('Authorization', token)
         .send(newNote)
         .expect(400);
+
+      const notesAtEnd = await helper.notesInDb();
+      expect(notesAtEnd.length).toBe(helper.initialNotes.length);
+    });
+
+    test('fail with code 401 unauthorized if user has no token', async () => {
+      const newNote = {
+        important: true
+      };
+
+      await api
+        .post('/api/notes')
+        .send(newNote)
+        .expect(401);
 
       const notesAtEnd = await helper.notesInDb();
       expect(notesAtEnd.length).toBe(helper.initialNotes.length);

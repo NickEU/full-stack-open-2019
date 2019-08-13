@@ -1,8 +1,9 @@
 post http://localhost:3003/api/notes
 Content-Type: application/json
+Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InNob3RndW4iLCJpZCI6IjVkNTJkNzg0ODkyYzI2Mzg4ODZmODRmMiIsImlhdCI6MTU2NTcxMTI2MH0.DNx7iAMiYqZfdi0TXEKKNoUc0X0JO2VNbJKXYw7J47E
 
 {
-    "content": "HTTP is fun",
+    "content": "User authorization is important",
     "important": true,
-    "userId": "5d4c374d9728d24c18b7dda8"
+    "userId": "5d52d784892c2638886f84f2"
 }

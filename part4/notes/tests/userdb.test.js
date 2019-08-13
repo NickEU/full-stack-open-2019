@@ -5,14 +5,20 @@ const helper = require('./test-helper');
 const app = require('../app');
 
 const api = supertest(app);
+beforeEach(async () => {
+  await User.deleteMany({});
+  // const user = new User({ username: 'root69', password: 'secret25' });
+  // await user.save();
+  const newUser = {
+    username: 'root69',
+    name: 'Test Subject',
+    password: 'secret25'
+  };
+
+  await api.post('/api/users').send(newUser);
+});
 
 describe('APITEST when there is initially one user at db', () => {
-  beforeEach(async () => {
-    await User.deleteMany({});
-    const user = new User({ username: 'root69', password: 'secret25' });
-    await user.save();
-  });
-
   test('creation succeeds with a fresh username', async () => {
     const usersAtStart = await helper.usersInDb();
 
@@ -55,6 +61,17 @@ describe('APITEST when there is initially one user at db', () => {
     const usersAtEnd = await helper.usersInDb();
     expect(usersAtEnd.length).toBe(usersAtStart.length);
   }, 15000);
+
+  describe('logging in and getting a token', () => {
+    test('login success', async () => {
+      const res = await api
+        .post('/api/login')
+        .send({ username: 'root69', password: 'secret25' })
+        .expect(200)
+        .expect('Content-Type', /application\/json/);
+      console.log(res.body.token);
+    });
+  });
 });
 
 afterAll(() => {
